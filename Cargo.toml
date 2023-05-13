@@ -1,6 +1,6 @@
 [package]
 name = "const-chunks"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Extension trait to chunk iterators into const-length arrays."
 repository = "https://github.com/LouisGariepy/const-chunks"
