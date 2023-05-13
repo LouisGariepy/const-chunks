@@ -1,0 +1,32 @@
+
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+  # Disable incremental compilation because we aren't caching incremental compilation
+  # artifacts, so they won't be useful for anything (other than maybe the exhaustive
+  # builds with different features).
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  miri:
+    name: "Miri"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test
+        run: cargo test
+      - name: Install Miri
+        run: |
+          rustup toolchain install nightly --component miri
+          rustup override set nightly
+          cargo miri setup
+      - name: Test with Miri
+        run: cargo miri test
