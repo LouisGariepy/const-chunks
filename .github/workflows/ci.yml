@@ -14,8 +14,8 @@ env:
   CARGO_INCREMENTAL: 0
 
 jobs:
-  miri:
-    name: "Miri"
+  tests:
+    name: "Tests"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
