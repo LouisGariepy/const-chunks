@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      # TODO: Is it really necessary to test separately from MIRI?
       - name: Test
         run: cargo test
       - name: Install Miri
