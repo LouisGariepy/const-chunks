@@ -14,7 +14,7 @@
   
   <!-- Dependencies -->
   <a href="https://deps.rs/repo/github/LouisGariepy/const-chunks">
-    <img src="https://img.shields.io/badge/-no%20dependencies-green?style=flat-square"
+    <img src="https://deps.rs/repo/github/LouisGariepy/const-chunks/status.svg?style=flat-square"
     alt="Crates.io version" />
   </a>
  
@@ -22,6 +22,8 @@
   <a href="https://github.com/LouisGariepy/const-chunks#License">
     <img src="https://img.shields.io/badge/License-APACHE--2.0%2FMIT-blue?style=flat-square" alt="License">
   </a>
+
+  
 </div>
 
 
