@@ -51,7 +51,7 @@ Nonetheless, you should still consider this fact if you're trying to minimize un
 ## MSRV
 This crate requires `rustc` version 1.65 or newer.
 
-This crate's MSRV is enforced through the manifests `rust-version` key.
+This crate's MSRV is enforced through the manifest's `rust-version` key.
 
 ## License
 
