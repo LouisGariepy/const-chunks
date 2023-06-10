@@ -88,6 +88,11 @@ impl<const N: usize, I: Iterator> Iterator for ConstChunks<N, I> {
             Some(init_arr)
         }
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let (lower, upper) = self.inner.size_hint();
+        (lower / N, upper.map(|upper| upper / N))
+    }
 }
 
 /// An extension trait providing [`Iterator`]s with the capability to iterate
