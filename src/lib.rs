@@ -14,6 +14,45 @@
 
 use std::mem::MaybeUninit;
 
+struct ChunkGuard<'a, T> {
+    /// The array to be initialized.
+    pub array: &'a mut [MaybeUninit<T>],
+    /// The number of items that have been initialized so far.
+    pub initialized: usize,
+}
+
+impl<'a, T> ChunkGuard<'a, T> {
+    fn new(array: &'a mut [MaybeUninit<T>]) -> Self {
+        Self {
+            array,
+            initialized: 0,
+        }
+    }
+
+    /// Adds an item to the array and updates the initialized item counter.
+    ///
+    /// # Safety
+    ///
+    /// No more than N elements must be initialized.
+    #[inline]
+    unsafe fn init_next_unchecked(&mut self, item: T) {
+        self.array.get_unchecked_mut(self.initialized).write(item);
+        self.initialized += 1;
+    }
+}
+
+impl<'a, T> Drop for ChunkGuard<'a, T> {
+    fn drop(&mut self) {
+        // SAFETY: this slice will contain only initialized objects.
+        let init_slice = &mut self.array[..self.initialized];
+        unsafe {
+            for init in init_slice {
+                init.assume_init_drop();
+            }
+        }
+    }
+}
+
 /// An iterator that iterates over constant-length chunks, where the length is known at compile time.
 ///
 /// This struct is created by the [`IteratorConstChunks::const_chunks`]. See its documentation for more.
@@ -28,28 +67,23 @@ impl<const N: usize, I: Iterator> Iterator for ConstChunks<N, I> {
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
             // Create array of unitialized values
-            let mut arr: [MaybeUninit<I::Item>; N] = MaybeUninit::uninit().assume_init();
+            let mut array: [MaybeUninit<I::Item>; N] = MaybeUninit::uninit().assume_init();
+            let mut guard = ChunkGuard::new(&mut array);
 
             // Initialize items
-            for i in 0..N {
-                // Get the next iterator item
+            for _ in 0..N {
                 let Some(val) = self.inner.next() else {
-                    // If there wasn't enough items to fill the array then
-                    // manually drop the initialized values
-                    for v in &mut arr[..i] {
-                        v.assume_init_drop();
-                    }
-                    // early-return None.
                     return None;
                 };
-
-                // Initialize item
-                arr[i].write(val);
+                guard.init_next_unchecked(val);
             }
+
+            // Disarm guard
+            std::mem::forget(guard);
 
             // Cast to an array of definitely initialized `I::Item`s
             // TODO: use `array_assume_init` when stabilized.
-            let init_arr = (&arr as *const _ as *const [I::Item; N]).read();
+            let init_arr = (&array as *const _ as *const [I::Item; N]).read();
 
             Some(init_arr)
         }
