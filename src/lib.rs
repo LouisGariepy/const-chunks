@@ -139,3 +139,32 @@ impl<I: Iterator> IteratorConstChunks for I {
         ConstChunks { inner: self }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::panic::catch_unwind;
+
+    use crate::IteratorConstChunks;
+
+    #[test]
+    fn test_panic_leak() {
+        // Setup an iterator that can panic on `next`.
+        struct PanicIter<I: Iterator> {
+            inner: I,
+        }
+        impl<I: Iterator> Iterator for PanicIter<I> {
+            type Item = I::Item;
+
+            fn next(&mut self) -> Option<Self::Item> {
+                // Causes a panic when the inner iterator is exhausted
+                Some(self.inner.next().unwrap())
+            }
+        }
+        let panic_iter = PanicIter {
+            inner: [String::from("1")].into_iter(),
+        };
+
+        // Catch the panic to try to cause a leak
+        let _ = catch_unwind(|| panic_iter.const_chunks::<4>().collect::<Vec<_>>());
+    }
+}
