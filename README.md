@@ -29,7 +29,7 @@
 
 This crate provides an extension trait that lets you chunk iterators into constant-length arrays using `const` generics.
 
-See the [`IteratorConstChunks::const_chunks`] docs for more info.
+See the [docs](https://docs.rs/const-chunks/latest/const_chunks/) for more info.
 
 ```rust
 use const_chunks::IteratorConstChunks;
