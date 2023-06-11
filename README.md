@@ -29,16 +29,19 @@
 
 This crate provides an extension trait that lets you chunk iterators into constant-length arrays using `const` generics.
 
-See the [docs](https://docs.rs/const-chunks/latest/const_chunks/) for more info.
+See the [`IteratorConstChunks::const_chunks`] docs for more info.
 
 ```rust
 use const_chunks::IteratorConstChunks;
 
-let v = vec![1, 2, 3, 4, 5, 6];
-let mut v_iter = v.into_iter().const_chunks::<2>();
-assert_eq!(v_iter.next(), Some([1,2]));
-assert_eq!(v_iter.next(), Some([3,4]));
-assert_eq!(v_iter.next(), Some([5,6]));
+let mut iter = vec![1, 2, 3, 4, 5].into_iter().const_chunks::<2>();
+assert_eq!(iter.next(), Some([1,2]));
+assert_eq!(iter.next(), Some([3,4]));
+assert_eq!(iter.next(), None);
+
+let mut remainder = iter.into_remainder().unwrap();
+assert_eq!(remainder.next(), Some(5));
+assert_eq!(remainder.next(), None);
 ```
 
 # Safety

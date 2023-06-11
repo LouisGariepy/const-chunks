@@ -5,10 +5,14 @@
 //! ```rust
 //! use const_chunks::IteratorConstChunks;
 //!
-//! let mut iter = vec![1, 2, 3, 4].into_iter().const_chunks::<2>();
+//! let mut iter = vec![1, 2, 3, 4, 5].into_iter().const_chunks::<2>();
 //! assert_eq!(iter.next(), Some([1,2]));
 //! assert_eq!(iter.next(), Some([3,4]));
 //! assert_eq!(iter.next(), None);
+//!
+//! let mut remainder = iter.into_remainder().unwrap();
+//! assert_eq!(remainder.next(), Some(5));
+//! assert_eq!(remainder.next(), None);
 //! ```
 
 mod panic_guard;
