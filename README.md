@@ -49,7 +49,7 @@ This crate uses unsafe to manipulate uninitialized memory.
 
 To prevent undefined behaviour, the code runs MIRI in CI, and is both very short and easy to audit.
 
-Nonetheless, you should still consider this fact if you're trying to minimize unsafe dependencies.
+Nevertheless, you should still consider this fact if you're trying to minimize unsafe dependencies.
 
 ## MSRV
 This crate requires `rustc` version 1.65 or newer.
@@ -59,8 +59,10 @@ This crate's MSRV is enforced through the manifest's `rust-version` key.
 ## License
 
 Licensed under either of
+
  * Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
  * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
 at your option.
 
 ### Contribution
