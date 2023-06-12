@@ -175,7 +175,9 @@ pub trait IteratorConstChunks {
     ///
     /// Note that trying to build chunks of size 0 will fail to compile:
     ///
-    /// ```ignore
+    // TODO: Workaround until MIRI can catch const-eval panics as compilation errors (https://github.com/rust-lang/miri/issues/2423).
+    #[cfg_attr(miri, doc = "```should_panic")]
+    #[cfg_attr(not(miri), doc = "```compile_fail,E0080")]
     /// use const_chunks::IteratorConstChunks;
     ///
     /// let _ = vec![1, 2].into_iter().const_chunks::<0>();
