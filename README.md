@@ -27,8 +27,6 @@
   <a href="https://github.com/LouisGariepy/const-chunks#License">
     <img src="https://img.shields.io/badge/License-APACHE--2.0%2FMIT-blue?style=flat-square" alt="License">
   </a>
-
-  
 </div>
 
 
