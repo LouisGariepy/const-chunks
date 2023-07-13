@@ -1,4 +1,7 @@
-use std::{mem::MaybeUninit, ops::Range};
+use core::{
+    mem::{replace, MaybeUninit},
+    ops::Range,
+};
 
 use crate::drop_slice;
 
@@ -24,7 +27,7 @@ impl<const N: usize, T> Iterator for ConstChunksRemainder<N, T> {
             //
             // SAFETY: `self.init_range.start` is in bounds and points to an initialized item.
             let next_init = unsafe {
-                std::mem::replace(
+                replace(
                     self.remainder_chunk
                         .get_unchecked_mut(self.init_range.start),
                     MaybeUninit::uninit(),

@@ -15,10 +15,12 @@
 //! assert_eq!(remainder.next(), None);
 //! ```
 
+#![cfg_attr(not(test), no_std)]
+
 mod panic_guard;
 mod remainder;
 
-use std::mem::MaybeUninit;
+use core::mem::{forget, MaybeUninit};
 
 use panic_guard::ChunkPanicGuard;
 use remainder::ConstChunksRemainder;
@@ -90,7 +92,7 @@ impl<const N: usize, I: Iterator> Iterator for ConstChunks<N, I> {
             let Some(item) = self.inner.next() else {
                     // Disarm panic guard. `ConstChunksRemainder` will
                     // handle the partially initialized array.
-                    std::mem::forget(guard);
+                    forget(guard);
 
                     // Set remainder
                     self.remainder = Some(ConstChunksRemainder {
@@ -108,7 +110,7 @@ impl<const N: usize, I: Iterator> Iterator for ConstChunks<N, I> {
 
         // Disarm panic guard. At this point all the items are initialized
         // and we're about to get rid of the `MaybeUninit`s.
-        std::mem::forget(guard);
+        forget(guard);
 
         // Cast to an array of definitely initialized items
         //

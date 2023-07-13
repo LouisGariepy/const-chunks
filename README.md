@@ -17,6 +17,11 @@
     <img src="https://deps.rs/repo/github/LouisGariepy/const-chunks/status.svg?style=flat-square"
     alt="Crates.io version" />
   </a>
+
+  <!-- no_std -->
+  <picture>
+    <img alt="no_std compatible" src="https://img.shields.io/badge/no__std-compatible-light_green?style=flat-square"/>
+  </picture>
  
   <!-- License -->
   <a href="https://github.com/LouisGariepy/const-chunks#License">
@@ -27,7 +32,7 @@
 </div>
 
 
-This crate provides an extension trait that lets you chunk iterators into constant-length arrays using `const` generics.
+This crate provides a `#![no_std]`-compatible extension trait that lets you chunk iterators into constant-length arrays using `const` generics.
 
 See the [docs](https://docs.rs/const-chunks/latest/const_chunks/) for more info.
 

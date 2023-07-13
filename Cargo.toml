@@ -6,7 +6,7 @@ description = "Extension trait to chunk iterators into const-length arrays."
 repository = "https://github.com/LouisGariepy/const-chunks"
 license = "MIT/Apache-2.0"
 keywords = ["iterator", "const-generics", "chunk", "iteration", "adaptor"]
-categories = ["algorithms", "rust-patterns"]
+categories = ["algorithms", "rust-patterns", "no-std", "no-std::no-alloc"]
 rust-version = "1.65.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
