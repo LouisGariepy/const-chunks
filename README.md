@@ -29,6 +29,8 @@
   </a>
 </div>
 
+<br/>
+
 
 This crate provides a `#![no_std]`-compatible extension trait that lets you chunk iterators into constant-length arrays using `const` generics.
 
