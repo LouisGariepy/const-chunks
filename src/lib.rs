@@ -15,7 +15,7 @@
 //! assert_eq!(remainder.next(), None);
 //! ```
 
-#![cfg_attr(not(test), no_std)]
+#![no_std]
 
 mod panic_guard;
 mod remainder;
@@ -222,7 +222,13 @@ unsafe fn drop_slice<T>(slice: &mut [MaybeUninit<T>]) {
 
 #[cfg(test)]
 mod tests {
-    use std::panic::catch_unwind;
+    extern crate std;
+    use std::{
+        panic::catch_unwind,
+        string::{String, ToString},
+        vec,
+        vec::Vec,
+    };
 
     use crate::IteratorConstChunks;
 
