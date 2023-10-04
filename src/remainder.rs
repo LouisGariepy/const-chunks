@@ -8,7 +8,7 @@ use crate::drop_slice;
 /// Iterator over the remaining items that couldn't fill a chunk completely.
 ///
 /// See [`ConstChunks::into_remainder`] for more details.
-pub struct ConstChunksRemainder<const N: usize, T> {
+pub struct Remainder<const N: usize, T> {
     /// The array to be initialized.
     pub(crate) remainder_chunk: [MaybeUninit<T>; N],
     /// The range of initialized items.
@@ -17,7 +17,7 @@ pub struct ConstChunksRemainder<const N: usize, T> {
     pub(crate) init_range: Range<usize>,
 }
 
-impl<const N: usize, T> Iterator for ConstChunksRemainder<N, T> {
+impl<const N: usize, T> Iterator for Remainder<N, T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -43,7 +43,7 @@ impl<const N: usize, T> Iterator for ConstChunksRemainder<N, T> {
     }
 }
 
-impl<const N: usize, T> Drop for ConstChunksRemainder<N, T> {
+impl<const N: usize, T> Drop for Remainder<N, T> {
     fn drop(&mut self) {
         // SAFETY: The slice contains only initialized objects.
         unsafe { drop_slice(&mut self.remainder_chunk[self.init_range.clone()]) }

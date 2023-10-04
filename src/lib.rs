@@ -20,10 +20,13 @@
 mod panic_guard;
 mod remainder;
 
-use core::mem::{forget, MaybeUninit};
+use core::{
+    mem::{forget, MaybeUninit},
+    ptr,
+};
 
-use panic_guard::ChunkPanicGuard;
-use remainder::ConstChunksRemainder;
+use panic_guard::PanicGuard;
+use remainder::Remainder;
 
 /// An iterator that iterates over constant-length chunks, where the length is known at compile time.
 ///
@@ -35,7 +38,7 @@ pub struct ConstChunks<const N: usize, I: Iterator> {
     ///
     /// This field is None if the underlying iterator hasn't been completely consumed
     /// or if there are no remaining items.
-    remainder: Option<ConstChunksRemainder<N, I::Item>>,
+    remainder: Option<Remainder<N, I::Item>>,
 }
 
 impl<const N: usize, I: Iterator> ConstChunks<N, I> {
@@ -61,7 +64,7 @@ impl<const N: usize, I: Iterator> ConstChunks<N, I> {
     /// let remainder = v_iter.into_remainder().unwrap().collect::<Vec<_>>();
     /// assert_eq!(remainder, vec![5, 6]);
     /// ```
-    pub fn into_remainder(self) -> Option<ConstChunksRemainder<N, I::Item>> {
+    pub fn into_remainder(self) -> Option<Remainder<N, I::Item>> {
         self.remainder
     }
 }
@@ -80,7 +83,7 @@ impl<const N: usize, I: Iterator> Iterator for ConstChunks<N, I> {
         // SAFETY: The `assume_init` is sound because `MaybeUninit`s do not require initialization.
         let mut array: [MaybeUninit<I::Item>; N] = unsafe { MaybeUninit::uninit().assume_init() };
         // Create panic guard
-        let mut guard = ChunkPanicGuard {
+        let mut guard = PanicGuard {
             slice: &mut array,
             initialized: 0,
         };
@@ -90,19 +93,19 @@ impl<const N: usize, I: Iterator> Iterator for ConstChunks<N, I> {
         // Initialize remaining items
         for i in 1..N {
             let Some(item) = self.inner.next() else {
-                    // Disarm panic guard. `ConstChunksRemainder` will
-                    // handle the partially initialized array.
-                    forget(guard);
+                // Disarm panic guard. `ConstChunksRemainder` will
+                // handle the partially initialized array.
+                forget(guard);
 
-                    // Set remainder
-                    self.remainder = Some(ConstChunksRemainder {
-                        remainder_chunk: array,
-                        init_range: 0..i
-                    });
+                // Set remainder
+                self.remainder = Some(Remainder {
+                    remainder_chunk: array,
+                    init_range: 0..i,
+                });
 
-                    // No more chunks
-                    return None;
-                };
+                // No more chunks
+                return None;
+            };
             // SAFETY: Will be called at most N times (including the initial
             // `init_next_unchecked` call before the loop)
             unsafe { guard.init_next_unchecked(item) };
@@ -117,7 +120,7 @@ impl<const N: usize, I: Iterator> Iterator for ConstChunks<N, I> {
         // SAFETY: If we've reached this point, all the items in the chunk have been initialized.
         //
         // TODO: use `array_assume_init` when stabilized.
-        let init_arr = unsafe { (&array as *const _ as *const [I::Item; N]).read() };
+        let init_arr = unsafe { ptr::addr_of!(array).cast::<[I::Item; N]>().read() };
 
         Some(init_arr)
     }
