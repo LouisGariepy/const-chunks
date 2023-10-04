@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Clippy
+        run: cargo clippy -- -D clippy::all -D clippy::pedantic
       - name: Install Miri
         run: |
           rustup toolchain install nightly --component miri
