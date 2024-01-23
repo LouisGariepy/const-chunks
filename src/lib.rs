@@ -203,7 +203,7 @@ impl<I: Iterator> IteratorConstChunks for I {
     fn const_chunks<const N: usize>(self) -> ConstChunks<N, Self::Inner> {
         // Assert N > 0 (see `ConstChunks::N_GT_ZERO`)
         #[allow(clippy::let_unit_value)]
-        let _ = ConstChunks::<N, Self::Inner>::N_GT_ZERO;
+        let () = ConstChunks::<N, Self::Inner>::N_GT_ZERO;
 
         ConstChunks {
             inner: self,
