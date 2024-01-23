@@ -31,7 +31,6 @@
 
 <br/>
 
-
 This crate provides a `#![no_std]`-compatible extension trait that lets you chunk iterators into constant-length arrays using `const` generics.
 
 See the [docs](https://docs.rs/const-chunks/latest/const_chunks/) for more info.
@@ -49,14 +48,16 @@ assert_eq!(remainder.next(), Some(5));
 assert_eq!(remainder.next(), None);
 ```
 
-# Safety
+## Safety
+
 This crate uses unsafe to manipulate uninitialized memory.
 
-To prevent undefined behaviour, the code runs MIRI in CI, and is both very short and easy to audit.
+To prevent undefined behavior, the code runs MIRI in CI. It's also well-documented and easy to audit.
 
 Nevertheless, you should still consider this fact if you're trying to minimize unsafe dependencies.
 
 ## MSRV
+
 This crate requires `rustc` version 1.65 or newer.
 
 This crate's MSRV is enforced through the manifest's `rust-version` key.
@@ -65,8 +66,8 @@ This crate's MSRV is enforced through the manifest's `rust-version` key.
 
 Licensed under either of
 
- * Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+* MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
